@@ -86,4 +86,8 @@ if __name__ == '__main__':
     admin = admin.Admin(app, u'用户管理系统')
     # Add views
     admin.add_view(UserView(db.user, u'用户'))
-    app.run(debug=True)
+    if is_mac():
+        host = '127.0.0.1'
+    else:
+        host = '192.241.196.189'
+    app.run(host=host, debug=True)
