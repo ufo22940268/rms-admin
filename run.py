@@ -72,9 +72,9 @@ def index():
     if request.method == 'POST':
         if request.form['field1'] == "admin" and request.form['field2'] == 'admin':
             if is_mac():
-                return redirect('http://127.0.0.1:5000/admin/userview/')
+                return redirect('http://127.0.0.1:5001/admin/userview/')
             else:
-                return redirect('http://192.241.196.189:5000/admin/userview/')
+                return redirect('http://192.241.196.189:5001/admin/userview/')
         else:
             return render_template('failed.html', form=form)
     else:
@@ -90,4 +90,4 @@ if __name__ == '__main__':
         host = '127.0.0.1'
     else:
         host = '192.241.196.189'
-    app.run(host=host, debug=True)
+    app.run(host=host, port=5001, debug=True)
