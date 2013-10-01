@@ -1,0 +1,16 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+
+{% block content %}
+<div class="container">
+  <h1>登陆失败</h1>
+  <a href="/" class="btn btn-default">重新登陆</a>
+</div>
+{% endblock %}
+
+{% block head %}
+{{super()}}
+{{fixes.ie8()}}
+<link href="url{ url_for('static', filename='failed.css'" rel="stylesheet"/>
+{% endblock %}
