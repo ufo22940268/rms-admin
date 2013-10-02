@@ -7,7 +7,7 @@ save:
 	echo "success"
 
 all:
-	python sample_app.py
+	python run.py
 
 
 .DEFAULT_GOAL := save

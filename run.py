@@ -15,7 +15,7 @@ from flask.ext.admin.form import Select2Widget
 from flask.ext.admin.contrib.pymongo import ModelView, filters
 from flask.ext.admin.model.fields import InlineFormField, InlineFieldList
 from util import *
-
+from flask.ext.babelex import Babel
 
 class ExampleForm(Form):
     field1 = TextField(u'用户名', id='username')
@@ -47,6 +47,9 @@ def create_app(configfile=None):
 app = create_app()
 # Create dummy secrey key so we can use sessions
 app.config['SECRET_KEY'] = '123456790'
+# Initialize babel
+babel = Babel(app)
+
 
 # Create models
 conn = pymongo.Connection()
@@ -80,10 +83,16 @@ def index():
     else:
         return render_template('index.html', form=form)
 
+@babel.localeselector
+def get_locale():
+    return 'zh'
+
 
 if __name__ == '__main__':
     # Create admin
     admin = admin.Admin(app, u'用户管理系统')
+    admin.locale_selector(get_locale)
+
     # Add views
     admin.add_view(UserView(db.user, u'用户'))
     if is_mac():
