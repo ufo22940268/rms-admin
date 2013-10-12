@@ -1,0 +1,7 @@
+.gitignore.swp
+bin/
+include/
+lib/
+log
+**/*.pyc
+*.pyc

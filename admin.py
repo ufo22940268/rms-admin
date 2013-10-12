@@ -99,4 +99,4 @@ if __name__ == '__main__':
         host = '127.0.0.1'
     else:
         host = '192.241.196.189'
-    app.run(host=host, port=5001, debug=True)
+    app.run(host=host, port=5001)
