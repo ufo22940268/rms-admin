@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap
 from flask_appconfig import AppConfig
 from flask_wtf import Form, RecaptchaField
 from wtforms import TextField, HiddenField, ValidationError, RadioField,\
-    BooleanField, SubmitField
+    BooleanField, SubmitField, DateField
 from wtforms.validators import Required
 import pymongo
 from bson.objectid import ObjectId
@@ -16,19 +16,12 @@ from flask.ext.admin.contrib.pymongo import ModelView, filters
 from flask.ext.admin.model.fields import InlineFormField, InlineFieldList
 from util import *
 from flask.ext.babelex import Babel
+from datetime import date, timedelta, datetime
 
 class ExampleForm(Form):
     field1 = TextField(u'用户名', id='username')
-    field2 = TextField(u'密码', id='password')
+    field2 = TextField(u'密码aa', id='password')
     submit_button = SubmitField(u'提交')
-
-    def validate_field1(form, field):
-        print 'username', field
-        raise ValidationError('Always wrong')
-
-    def validate_field2(form, field):
-        raise ValidationError('Always wrong')
-
 
 def create_app(configfile=None):
     app = Flask(__name__)
@@ -56,18 +49,16 @@ conn = pymongo.Connection()
 db = conn.rms
 
 class UserForm(form.Form):
-    name = fields.TextField('Name')
-    password = fields.TextField('Password')
+    name = fields.TextField(u'用户名')
+    password = fields.TextField(u'密码')
+    valid_from = fields.DateTimeField(u'有效开始时间', default=datetime.today())
+    valid_to = fields.DateTimeField(u'有效结束时间', default=date.today() + timedelta(days=365))
 
-class UserView(ModelView):
-    column_list = ('name', 'password')
-    column_sortable_list = ('name', 'password')
+class SuperUserView(ModelView):
+    column_list = ('name', 'password', 'valid_from', 'valid_to')
+    column_sortable_list = ('name', 'password', 'valid_from', 'valid_to')
 
     form = UserForm
-
-@app.route('/hello', methods=['POST', 'GET'])
-def hello():
-    return "hello"
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -75,9 +66,9 @@ def index():
     if request.method == 'POST':
         if request.form['field1'] == "admin" and request.form['field2'] == 'admin':
             if is_mac():
-                return redirect('http://127.0.0.1:5001/admin/userview/')
+                return redirect('http://127.0.0.1:5001/admin/super_userview/')
             else:
-                return redirect('http://192.241.196.189:5001/admin/userview/')
+                return redirect('http://192.241.196.189:5001/admin/super_userview/')
         else:
             return render_template('failed.html', form=form)
     else:
@@ -94,9 +85,14 @@ if __name__ == '__main__':
     admin.locale_selector(get_locale)
 
     # Add views
-    admin.add_view(UserView(db.user, u'用户'))
+    admin.add_view(SuperUserView(db.super_user, u'管理员'))
     if is_mac():
         host = '127.0.0.1'
     else:
         host = '192.241.196.189'
-    app.run(host=host, port=5001)
+
+    if is_mac():
+        debug = True
+    else:
+        debug = False
+    app.run(host=host, port=5001, debug=debug)
