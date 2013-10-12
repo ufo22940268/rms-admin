@@ -20,7 +20,7 @@ from datetime import date, timedelta, datetime
 
 class ExampleForm(Form):
     field1 = TextField(u'用户名', id='username')
-    field2 = TextField(u'密码aa', id='password')
+    field2 = TextField(u'密码', id='password')
     submit_button = SubmitField(u'提交')
 
 def create_app(configfile=None):
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     admin.locale_selector(get_locale)
 
     # Add views
-    admin.add_view(SuperUserView(db.super_user, u'管理员'))
+    admin.add_view(SuperUserView(db.super_user, u'创建操作员'))
     if is_mac():
         host = '127.0.0.1'
     else:
